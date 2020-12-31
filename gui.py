@@ -6,7 +6,7 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-import scipy.optimize as optimize
+from fit import curve_fit
 import numpy as np
 
 from settings import curve_fit_parameter_settings
@@ -22,6 +22,13 @@ models = [
     # 'logDE_mag',
     # 'logInterST_mag',
     # 'logST_mag'
+]
+loss_modifiers = [
+    'linear',
+    'soft_l1',
+    'huber',
+    'cauchy',
+    'arctan',
 ]
 
 root = tk.Tk()
@@ -39,6 +46,7 @@ chart_type.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
 def run_regression():
     model = get_model()
     data_frame = get_dataset()
+    loss_modifier = get_loss_modifier()
 
     x = data_frame['ExpFact']
     d = data_frame['D_L']
@@ -48,7 +56,7 @@ def run_regression():
     ax.errorbar(x, d, ed, fmt='.', label='data', capsize=5)
     ax.autoscale(enable=True)
 
-    popt, pcov = optimize.curve_fit(model, x, d, sigma=ed, **curve_fit_parameter_settings)
+    popt, pcov = curve_fit(model, x, d, sigma=ed, loss_modifier=loss_modifier, **curve_fit_parameter_settings)
     xf = np.linspace(x.min(), x.max(), num=50)
     ax.plot(xf, model(xf, *popt), 'g--',
             label='fit: Hubble=%5.3f, Matter=%5.3f' % (popt[0], popt[1]))
@@ -100,6 +108,23 @@ def get_dataset():
     data_frame['Err_D_L'].mask(lambda e: e == 0, 1e-9, inplace=True)
 
     return data_frame
+
+############################
+# Loss modifier selector
+lossSelectorFrame = ttk.Labelframe(widgetFrame, text="Loss modifier")
+lossSelectorFrame.pack(side=tk.TOP)
+
+lossSelector = ttk.Combobox(
+    lossSelectorFrame,
+    values=loss_modifiers,
+    state='readonly'
+)
+lossSelector.current(0)
+lossSelector.pack(side=tk.TOP)
+lossSelector.bind("<<ComboboxSelected>>", lambda_run_regression)
+
+def get_loss_modifier():
+    return loss_modifiers[lossSelector.current()]
 
 run_regression()
 root.mainloop()
