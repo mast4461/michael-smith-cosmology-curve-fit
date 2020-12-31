@@ -43,6 +43,14 @@ ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, root)
 chart_type.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
 
+def create_widget_container(label):
+    frame = tk.Frame(widgetFrame, pady=10)
+    label = tk.Label(frame, text=label, anchor=tk.NW)
+    label.pack(side=tk.TOP)
+    return frame
+    # return ttk.Labelframe(widgetFrame, text=label, padding=5)
+
+
 def run_regression():
     model = get_model()
     data_frame = get_dataset()
@@ -71,7 +79,7 @@ lambda_run_regression = lambda x: run_regression()
 
 ############################
 # Model selector
-modelSelectorFrame = ttk.Labelframe(widgetFrame, text="Model")
+modelSelectorFrame = create_widget_container("Model")
 modelSelectorFrame.pack(side=tk.TOP)
 
 modelSelector = ttk.Combobox(
@@ -88,7 +96,7 @@ def get_model():
 
 ############################
 # Dataset selector
-datasetSelectorFrame = ttk.Labelframe(widgetFrame, text="Dataset")
+datasetSelectorFrame = create_widget_container("Dataset")
 datasetSelectorFrame.pack(side=tk.TOP)
 
 datasetSelector = ttk.Combobox(
@@ -111,7 +119,7 @@ def get_dataset():
 
 ############################
 # Loss modifier selector
-lossSelectorFrame = ttk.Labelframe(widgetFrame, text="Loss modifier")
+lossSelectorFrame = create_widget_container("Loss modifier")
 lossSelectorFrame.pack(side=tk.TOP)
 
 lossSelector = ttk.Combobox(
