@@ -11,5 +11,20 @@ from settings import speed_of_light
 """
 This routine analyses D_L_Data for the CURVED UNIVERSE WITHOUT DARK ENERGY.
 """
-def ST_D_L(D_L, Hubble, Matter):
-    return speed_of_light/(Hubble*D_L*np.sqrt(np.fabs(1-Matter)))*np.sinh(2*(np.arctanh(np.sqrt(np.fabs(1-Matter)))-np.arctanh(np.sqrt(np.fabs(1-Matter))/np.sqrt((Matter/D_L)+np.fabs(1-Matter)))))
+def ST_D_L(EspFact, Hubble, Matter):
+    return (speed_of_light/(Hubble*EspFact*np.sqrt(np.fabs(1-Matter))))*np.sinh(2*(np.arctanh(np.sqrt(np.fabs(1-Matter)))-np.arctanh(np.sqrt(np.fabs(1-Matter))/np.sqrt((Matter/EspFact)+np.fabs(1-Matter)))))
+"""
+One can breakdown the above function into two portions if necessary
+
+_portion1 being
+def _portion1(EspFact, Hubble, Matter):
+    return (speed_of_light/(Hubble*EspFact*np.sqrt(np.fabs(1-Matter))))
+    
+_portion2 being 
+def _portion2(EspFact, Matter):
+    np.sinh(2*(np.arctanh(np.sqrt(np.fabs(1-Matter)))-np.arctanh(np.sqrt(np.fabs(1-Matter))/np.sqrt((Matter/EspFact)+np.fabs(1-Matter)))))
+    
+the final product being 
+def cmpltfunction(EspFact, Hubble, Matter):
+    return _portion1 * _portion2
+"""
