@@ -12,21 +12,21 @@ from settings import speed_of_light
 """
 The function below is the exact function decribing the FLRW model with two parameters, Hubble constant and matter density. Note this is a 2-parameter FIT OF CURVED SPACETIME WITHOUT DARK ENERGY
 """
-def InterST_D_L(x, Hubble, Matter):
-    return _portion1(x, Hubble, Matter)*np.sinh(np.sqrt(np.fabs(1-Matter))*(_vectorizedIntersum(x, Matter)))
+def InterST_D_L(EspFact, Hubble, Matter):
+    return _portion1(EspFact, Hubble, Matter)*np.sinh(np.sqrt(np.fabs(1-Matter))*(_vectorizedIntersum(EspFact, Matter)))
 
 """
 This second portion is the function to be integrated
 """
-def _portion2(x, Matter):
-    return 1/(x*np.sqrt((Matter/x) + np.fabs(1-Matter)))
+def _portion2(EspFact, Matter):
+    return 1/(EspFact*np.sqrt((Matter/EspFact) + (1-Matter)))
 
-def _intersum(x, Matter):
-    return quad(_portion2, x, 1, args=(Matter))[0]
+def _intersum(EspFact, Matter):
+    return quad(_portion2, EspFact, args=(Matter))[0], 1
 _vectorizedIntersum = np.vectorize(_intersum, excluded=["Matter"])
 
 """
 This first portion is a simple calculation
 """
-def _portion1(x, Hubble, Matter):
-    return speed_of_light / (x * Hubble * np.sqrt(np.fabs(1 - Matter)))
+def _portion1(EspFact, Hubble, Matter):
+    return speed_of_light / (EspFact * Hubble * np.sqrt(np.fabs(1 - Matter)))
